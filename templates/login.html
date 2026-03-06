@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en"
+      style="--bs-primary: #3B5BFF;--bs-primary-rgb: 59,91,255;--bs-secondary: #6C63FF;--bs-secondary-rgb: 108,99,255;--bs-body-color: #E2E8F0;background: url(/assets/img/HomeBackground.png) top / cover;">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login – DAWSS Prom 2026</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: Akshar, sans-serif;
+        }
+        .login-card {
+            max-width: 420px;
+            width: 100%;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 1rem;
+        }
+        .login-card .form-control {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #E2E8F0;
+        }
+        .login-card .form-control:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #3B5BFF;
+            color: #E2E8F0;
+            box-shadow: 0 0 0 .25rem rgba(59, 91, 255, .25);
+        }
+        .login-card .form-label {
+            color: rgba(255, 255, 255, 0.85);
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar (same as index) -->
+<nav class="navbar navbar-expand-md navbar-light" style="background: rgba(22,191,244,0);">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/"
+           style="color: rgba(255,255,255,0.9);font-family: Akshar, sans-serif;">Prom 2026</a>
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navcol-1">
+            <span class="visually-hidden">Toggle navigation</span>
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active text-end" href="/"
+                       style="color: rgba(255,255,255,0.9);font-family: Akshar, sans-serif;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active text-end" href="/login"
+                       style="color: rgba(255,255,255,0.9);font-family: Akshar, sans-serif;">Sign Up / Log In</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Login Form -->
+<div class="flex-grow-1 d-flex justify-content-center align-items-center px-3">
+    <div class="login-card p-4 p-md-5 shadow-lg">
+        <h2 class="text-center mb-1" style="color: #fff;">Welcome Back 🎓</h2>
+        <p class="text-center mb-4" style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">
+            Sign in to register for Prom 2026
+        </p>
+
+        {% if error %}
+        <div class="alert alert-danger py-2" role="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" action="/login">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       placeholder="you@dawss.ca" required>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password"
+                       placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-lg"
+                    style="background: #237bfe; border: none;">
+                Log In
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
