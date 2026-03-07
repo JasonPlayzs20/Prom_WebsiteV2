@@ -1,4 +1,6 @@
 # from lib2to3.pgen2.literals import simple_escapes
+#pip install fastapi uvicorn jinja2 python-multipart itsdangerous
+
 
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
