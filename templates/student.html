@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grad Social 2026 — Seat Selection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Bootstrap palette (shared) ── */
+    :root {
+      --primary:      #0d6efd;
+      --success:      #198754;
+      --info:         #0dcaf0;
+      --warning:      #ffc107;
+      --danger:       #dc3545;
+      --accent-glow:  #0d6efd33;
+      --accent-light: #6ea8fe;
+    }
+
+    /* ── Dark theme (default) ── */
+    [data-theme="dark"] {
+      --bg:            transparent;
+      --surface:       rgba(8, 20, 49, 0.78);
+      --surface2:      rgba(12, 31, 72, 0.82);
+      --surface3:      rgba(21, 45, 97, 0.78);
+      --border:        rgba(255, 255, 255, 0.34);
+      --border-faint:  rgba(255, 255, 255, 0.2);
+      --text:          #f7fbff;
+      --muted:         rgba(229, 242, 255, 0.72);
+      --muted-light:   rgba(243, 249, 255, 0.9);
+      --table-empty:   rgba(255, 255, 255, 0.1);
+      --table-partial: rgba(35, 123, 254, 0.4);
+      --table-full:    rgba(255, 255, 255, 0.22);
+      --table-mine:    rgba(25, 135, 84, 0.45);
+      --modal-bg:      rgba(7, 19, 49, 0.92);
+      --input-bg:      rgba(255, 255, 255, 0.12);
+      --shadow:        0 24px 62px #0014378c;
+      --header-bg:     rgba(5, 16, 43, 0.42);
+      --header-border: rgba(255, 255, 255, 0.26);
+      --header-text:   rgba(255, 255, 255, 0.95);
+      --control-bg:    rgba(255, 255, 255, 0.13);
+      --control-border: rgba(255, 255, 255, 0.35);
+      --control-text:  rgba(255, 255, 255, 0.92);
+      --control-hover: #ffffff;
+      --overlay-top:   rgba(10, 26, 63, 0.58);
+      --overlay-bottom: rgba(11, 18, 39, 0.36);
+      --overlay-glow:  #4ea0ff3b;
+    }
+
+    /* ── Light theme ── */
+    [data-theme="light"] {
+      --bg:            transparent;
+      --surface:       rgba(255, 255, 255, 0.9);
+      --surface2:      rgba(247, 251, 255, 0.94);
+      --surface3:      rgba(230, 238, 252, 0.95);
+      --border:        rgba(34, 66, 128, 0.24);
+      --border-faint:  rgba(34, 66, 128, 0.14);
+      --text:          #1f3264;
+      --muted:         #445d92;
+      --muted-light:   #2a4279;
+      --table-empty:   #ffffffd9;
+      --table-partial: #bfd8ff;
+      --table-full:    #dce6f9;
+      --table-mine:    #cdeedc;
+      --modal-bg:      rgba(255, 255, 255, 0.96);
+      --input-bg:      rgba(255, 255, 255, 0.92);
+      --shadow:        0 20px 52px #0f2b6026;
+      --header-bg:     rgba(255, 255, 255, 0.7);
+      --header-border: rgba(35, 66, 128, 0.22);
+      --header-text:   #1f3264;
+      --control-bg:    rgba(255, 255, 255, 0.78);
+      --control-border: rgba(35, 66, 128, 0.28);
+      --control-text:  #1f3264;
+      --control-hover: #15316b;
+      --overlay-top:   rgba(244, 248, 255, 0.46);
+      --overlay-bottom: rgba(219, 232, 255, 0.2);
+      --overlay-glow:  #74a7ff2b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      background-image: url('/assets/img/HomeBackground.png');
+      background-size: cover;
+      background-position: top;
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: 'Akshar', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(180deg, var(--overlay-top), var(--overlay-bottom)),
+        radial-gradient(ellipse at 10% 8%, var(--overlay-glow) 0%, transparent 58%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--header-border);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .logo {
+      font-family: 'Akshar', sans-serif;
+      font-size: 1.5rem;
+      color: var(--header-text);
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+    .logo span { color: var(--header-text); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .user-info strong { color: var(--text); }
+
+    .seat-badge {
+      background: var(--warning);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    /* ── Theme toggle ── */
+    .theme-toggle {
+      background: var(--control-bg);
+      border: 1px solid var(--control-border);
+      border-radius: 999px;
+      padding: 0.3rem 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.82rem;
+      color: var(--control-text);
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .theme-toggle:hover { border-color: var(--control-hover); color: var(--control-hover); }
+    .theme-toggle .icon { font-size: 1rem; line-height: 1; }
+
+    .logout-btn {
+      color: var(--control-text);
+      text-decoration: none;
+      font-size: 0.82rem;
+      border: 1px solid var(--control-border);
+      padding: 0.3rem 0.85rem;
+      border-radius: 6px;
+      transition: all 0.18s;
+    }
+    .logout-btn:hover { color: var(--control-hover); border-color: var(--control-hover); }
+
+    /* ── Main ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .page-title h1 {
+      font-family: 'Akshar', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .page-title h1 span { color: var(--primary); }
+    .page-title p { color: var(--muted); margin-top: 0.4rem; font-size: 0.9rem; }
+
+    /* ── Disabled banner ── */
+    .disabled-banner {
+      background: #2c1215;
+      border: 1px solid #842029;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      text-align: center;
+      margin: 0 auto 2rem;
+      max-width: 580px;
+    }
+    [data-theme="light"] .disabled-banner { background: #f8d7da; border-color: #f5c2c7; }
+    .disabled-banner p { color: #ea868f; font-size: 0.88rem; line-height: 1.6; }
+    [data-theme="light"] .disabled-banner p { color: #842029; }
+    .disabled-banner a { color: #f1aeb5; font-weight: 600; }
+    [data-theme="light"] .disabled-banner a { color: #58151c; }
+
+    /* ── Current seats ── */
+    .current-seats {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .seat-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--table-mine);
+      border: 1px solid var(--success);
+      border-radius: 999px;
+      padding: 0.35rem 1rem;
+      font-size: 0.82rem;
+      color: #75b798;
+      box-shadow: 0 0 10px #19875422;
+    }
+    [data-theme="light"] .seat-chip { color: #0f5132; }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.8rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.45rem; }
+    .legend-dot { width: 13px; height: 13px; border-radius: 3px; border: 1px solid; }
+    .dot-available { background: var(--table-empty);   border-color: var(--border); }
+    .dot-partial   { background: var(--table-partial); border-color: var(--primary); }
+    .dot-full      { background: var(--table-full);    border-color: var(--border); opacity: 0.5; }
+    .dot-mine      { background: var(--table-mine);    border-color: var(--success); }
+
+    /* ── Venue ── */
+    .venue-label {
+      text-align: center;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .stage {
+      background: linear-gradient(135deg, #0d6efd18, #0d6efd08);
+      border: 1px solid #0d6efd55;
+      border-radius: 6px;
+      text-align: center;
+      padding: 0.5rem 2rem;
+      color: var(--primary);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      max-width: 200px;
+      margin: 0 auto 2rem;
+      font-weight: 500;
+    }
+
+    /* ── Table grid ── */
+    .table-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 10px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    @media (max-width: 680px) { .table-grid { grid-template-columns: repeat(5, 1fr); } }
+
+    .table-card {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      border: 1.5px solid var(--border-faint);
+      background: var(--table-empty);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: transform 0.16s, box-shadow 0.16s, border-color 0.16s, background 0.16s;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+    .table-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, #0d6efd18, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+    .table-card:hover::before { opacity: 1; }
+    .table-card:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 20px var(--accent-glow);
+      border-color: var(--primary);
+    }
+    .table-card.partial {
+      background: var(--table-partial);
+      border-color: #0d6efd55;
+    }
+    [data-theme="light"] .table-card.partial { border-color: #9ec5fe; }
+    .table-card.full {
+      background: var(--table-full);
+      border-color: var(--border-faint);
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+    .table-card.full:hover { transform: none; box-shadow: none; border-color: var(--border-faint); }
+    .table-card.mine {
+      background: var(--table-mine);
+      border-color: var(--success);
+      box-shadow: 0 0 14px #19875433;
+    }
+    .table-card.mine::after {
+      content: '✓';
+      position: absolute;
+      top: 3px; right: 6px;
+      font-size: 9px; font-weight: 700;
+      color: #75b798;
+    }
+    [data-theme="light"] .table-card.mine::after { color: #0f5132; }
+
+    .table-num {
+      font-family: 'Akshar', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--muted-light);
+      line-height: 1;
+    }
+    .table-card:hover .table-num   { color: var(--text); }
+    .table-card.partial .table-num { color: var(--accent-light); }
+    .table-card.mine .table-num    { color: #75b798; }
+    [data-theme="light"] .table-card.mine .table-num { color: #0f5132; }
+    [data-theme="light"] .table-card.partial .table-num { color: #0a58ca; }
+    .table-card.full .table-num    { color: var(--border); }
+
+    .table-count { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.04em; }
+    .table-card.full .table-count  { color: var(--border); }
+
+    .seat-dots {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 34px;
+    }
+    .seat-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--border-faint);
+    }
+    [data-theme="light"] .seat-dot { background: #dee2e6; }
+    .seat-dot.taken    { background: #6c757d; }
+    .seat-dot.mine-dot { background: var(--success); box-shadow: 0 0 3px var(--success); }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000000aa;
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s;
+    }
+    [data-theme="light"] .modal-overlay { background: #00000044; }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--modal-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 92%;
+      box-shadow: var(--shadow);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s, background 0.25s;
+      opacity: 0;
+    }
+    .modal-overlay.active .modal { transform: translateY(0) scale(1); opacity: 1; }
+
+    .modal-icon { font-size: 2.2rem; text-align: center; margin-bottom: 0.8rem; }
+    .modal h2 {
+      font-family: 'Akshar', sans-serif;
+      font-size: 1.35rem;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .modal p {
+      color: var(--muted-light);
+      text-align: center;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      margin-bottom: 1.4rem;
+    }
+    .modal p strong { color: var(--text); }
+    .modal p a { color: var(--info); }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.55rem 1.3rem;
+      border-radius: 6px;
+      font-family: 'Akshar', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.16s;
+    }
+    .btn-primary   { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover   { background: #0b5ed7; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--muted-light); border-color: var(--border); }
+    .btn-secondary:hover { color: var(--text); border-color: var(--muted-light); }
+    .btn-danger    { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .btn-danger:hover    { background: #bb2d3b; }
+    .btn:disabled  { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+    /* ── Seat selector ── */
+    .seat-selector {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin: 0.75rem 0 1.25rem;
+    }
+    .seat-option {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 1.1rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s;
+      min-width: 100px;
+      color: var(--text);
+    }
+    .seat-option:hover    { border-color: var(--primary); background: #0d6efd18; }
+    .seat-option.selected { border-color: var(--primary); background: var(--primary); color: #fff; }
+    .seat-option .seat-table-num {
+      font-family: 'Akshar', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: block;
+    }
+    .seat-option .seat-label { font-size: 0.7rem; opacity: 0.75; margin-top: 2px; display: block; }
+
+    /* ── Animations ── */
+    @keyframes pop-in {
+      0%   { transform: scale(0.4); opacity: 0; }
+      70%  { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .success-icon { animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; display: inline-block; }
+
+    .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 200; overflow: hidden; }
+    .confetti-piece { position: absolute; top: -10px; animation: confetti-fall linear forwards; border-radius: 2px; }
+    @keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 1.3rem;
+      color: var(--text);
+      font-size: 0.88rem;
+      z-index: 300;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+      box-shadow: 0 6px 24px #00000033;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="logo" href="/">Grad Social <span>2026</span></a>
+    <div class="header-right">
+      <div class="user-info">
+        <span>Welcome, <strong>{{ user_name }}</strong></span>
+        {% if has_second_seat %}<span class="seat-badge">2 Seats</span>{% endif %}
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle light/dark mode">
+        <span class="icon" id="themeIcon">☀️</span>
+      </button>
+      <a href="/logout" class="logout-btn">Log out</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-title">
+      <h1>Choose Your <span>Table</span></h1>
+      <p>40 tables · 10 guests per table</p>
+    </div>
+
+    {% if not enabled %}
+    <div class="disabled-banner">
+      <p>⚠️ Your account is not yet activated. Please contact <a href="mailto:prom@dawss.ca">prom@dawss.ca</a> to enable seat selection.</p>
+    </div>
+    {% endif %}
+
+    {% if not seat_picking_enabled %}
+    <div class="disabled-banner">
+      <p>⏸️ Seat selection is currently paused for all students by teachers. Please check back later.</p>
+    </div>
+    {% endif %}
+
+    {% if my_seats %}
+    <div class="current-seats" id="currentSeats">
+      {% for s in my_seats %}
+      <div class="seat-chip">🪑 Seat {{ loop.index }}: Table {{ s }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot dot-available"></div> Available</div>
+      <div class="legend-item"><div class="legend-dot dot-partial"></div> Partially Filled</div>
+      <div class="legend-item"><div class="legend-dot dot-full"></div> Full</div>
+      <div class="legend-item"><div class="legend-dot dot-mine"></div> Your Table</div>
+    </div>
+
+    <div class="venue-label">— VENUE LAYOUT —</div>
+    <div class="stage">▲ STAGE ▲</div>
+
+    <div class="table-grid" id="tableGrid">
+      {% for t in tables %}
+      <div
+        class="table-card {% if t.count >= 10 %}full{% elif t.count > 0 %}partial{% endif %} {% if t.number in my_seats %}mine{% endif %}"
+        data-table="{{ t.number }}"
+        data-count="{{ t.count }}"
+        onclick="handleTableClick({{ t.number }}, {{ t.count }}, {{ my_seats | tojson }}.filter(s => s === {{ t.number }}).length)"
+        title="Table {{ t.number }} — {{ t.count }}/10 seats taken"
+      >
+        <div class="table-num">{{ t.number }}</div>
+        <div class="seat-dots">
+          {% for i in range(10) %}
+          <div class="seat-dot {% if i < t.count %}{% if i >= t.count - (my_seats | select("equalto", t.number) | list | length) and (my_seats | select("equalto", t.number) | list | length) > 0 %}mine-dot{% else %}taken{% endif %}{% endif %}"></div>
+          {% endfor %}
+        </div>
+        <div class="table-count">{{ t.count }}/10</div>
+      </div>
+      {% endfor %}
+    </div>
+  </main>
+
+  <!-- Modal: Not Enabled -->
+  <div class="modal-overlay" id="disabledModal">
+    <div class="modal">
+      <div class="modal-icon">🔒</div>
+      <h2>Account Not Activated</h2>
+      <p>Your account hasn't been enabled yet. Please contact <strong><a href="mailto:prom@dawss.ca">prom@dawss.ca</a></strong> to get activated.</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="closeModal('disabledModal')">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Global Picking Paused -->
+  <div class="modal-overlay" id="globalDisabledModal">
+    <div class="modal">
+      <div class="modal-icon">⏸️</div>
+      <h2>Seat Selection Paused</h2>
+      <p>Teachers have temporarily paused seat selection for all students. Please try again later.</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="closeModal('globalDisabledModal')">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirm Select -->
+  <div class="modal-overlay" id="selectModal">
+    <div class="modal">
+      <div class="modal-icon">🪑</div>
+      <h2>Table <span id="selectTableNum">—</span></h2>
+      <p id="selectMsg">Reserve your seat at this table?</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('selectModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmSelect()">Confirm Seat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Change Seat (1 seat, not allowed second) -->
+  <div class="modal-overlay" id="changeModal">
+    <div class="modal">
+      <div class="modal-icon">🔄</div>
+      <h2>Change Seat?</h2>
+      <p>Move from <strong>Table <span id="changeFromTable">—</span></strong> to <strong>Table <span id="changeToTable">—</span></strong>?</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('changeModal')">Stay Put</button>
+        <button class="btn btn-danger" onclick="confirmChange()">Move Seat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Replace which seat (2 seats, moving to a new table) -->
+  <div class="modal-overlay" id="replaceModal">
+    <div class="modal">
+      <div class="modal-icon">🔄</div>
+      <h2>Which Seat to Replace?</h2>
+      <p>Moving to <strong>Table <span id="replaceToTable">—</span></strong>. Which seat should be replaced?</p>
+      <div class="seat-selector" id="seatSelector"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('replaceModal')">Cancel</button>
+        <button class="btn btn-danger" id="replaceConfirmBtn" onclick="confirmReplace()" disabled>Move Seat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Success -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal">
+      <div class="modal-icon"><span class="success-icon">🎉</span></div>
+      <h2>You're In!</h2>
+      <p id="successMsg">Your seat has been reserved.</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="closeModal('successModal')">Awesome!</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confetti-container" id="confettiContainer"></div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const IS_ENABLED       = {{ 'true' if enabled else 'false' }};
+    const IS_GLOBAL_PICKING_ENABLED = {{ 'true' if seat_picking_enabled else 'false' }};
+    const HAS_SECOND_SEAT  = {{ 'true' if has_second_seat else 'false' }};
+    let MY_SEATS = {{ my_seats | tojson }};  // e.g. [] | [5] | [5, 5] | [5, 12]
+
+    let pendingTable = null;
+    let replaceIndex = null;
+
+    // ── Theme toggle ─────────────────────────────────────────────────────────
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('prom-theme', theme);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    }
+
+    // Apply saved theme on load
+    const savedTheme = localStorage.getItem('prom-theme') || 'dark';
+    applyTheme(savedTheme);
+
+    // ── Table click handler ───────────────────────────────────────────────────
+    // mineCount = how many of MY_SEATS are at this table
+    function handleTableClick(tableNum, count, mineCount) {
+      if (!IS_GLOBAL_PICKING_ENABLED) { openModal('globalDisabledModal'); return; }
+      if (!IS_ENABLED) { openModal('disabledModal'); return; }
+
+      pendingTable = tableNum;
+
+      // Table is full — but only block if there's no room even accounting for my own seats
+      // (the server checks true capacity excluding the user's current seat on change)
+      if (count >= 10 && mineCount === 0) { showToast('This table is full!'); return; }
+
+      // ── No seats yet: select first seat ──
+      if (MY_SEATS.length === 0) {
+        document.getElementById('selectTableNum').textContent = tableNum;
+        document.getElementById('selectMsg').textContent =
+          `Reserve your seat at Table ${tableNum}? (${10 - count} spot${10 - count === 1 ? '' : 's'} left)`;
+        openModal('selectModal');
+        return;
+      }
+
+      // ── Has 1 seat ──
+      if (MY_SEATS.length === 1) {
+        if (!HAS_SECOND_SEAT) {
+          // Single-ticket: change seat
+          if (mineCount > 0) { showToast("You're already at this table!"); return; }
+          document.getElementById('changeFromTable').textContent = MY_SEATS[0];
+          document.getElementById('changeToTable').textContent = tableNum;
+          openModal('changeModal');
+        } else {
+          // Two-ticket: add second seat (same table allowed if space)
+          const spotsLeft = 10 - count;
+          // If same table, we already hold 1 spot, so need at least 1 more free
+          const availableForSecond = tableNum === MY_SEATS[0] ? spotsLeft : spotsLeft;
+          if (count >= 10) { showToast('This table is full!'); return; }
+          document.getElementById('selectTableNum').textContent = tableNum;
+          document.getElementById('selectMsg').textContent =
+            tableNum === MY_SEATS[0]
+              ? `Add your second seat also at Table ${tableNum}? (${spotsLeft} spot${spotsLeft === 1 ? '' : 's'} left)`
+              : `Add your second seat at Table ${tableNum}? (${spotsLeft} spot${spotsLeft === 1 ? '' : 's'} left)`;
+          openModal('selectModal');
+        }
+        return;
+      }
+
+      // ── Has 2 seats: ask which to replace ──
+      if (MY_SEATS.length >= 2) {
+        // If they click a table they BOTH sit at — nothing to do
+        if (mineCount >= 2) { showToast("Both your seats are already at this table!"); return; }
+
+        document.getElementById('replaceToTable').textContent = tableNum;
+        // Build seat options — only show seats NOT already at this table as replaceable
+        document.getElementById('seatSelector').innerHTML = MY_SEATS.map((s, i) => {
+          const isAtThisTable = s === tableNum;
+          return `
+          <div class="seat-option${isAtThisTable ? ' selected' : ''}" onclick="selectReplaceOption(${i}, this)" ${isAtThisTable ? 'data-same="true"' : ''}>
+            <span class="seat-table-num">${s}</span>
+            <span class="seat-label">Seat ${i + 1}${isAtThisTable ? ' (here)' : ''}</span>
+          </div>`;
+        }).join('');
+        replaceIndex = null;
+        // Auto-select if only one seat is NOT at this table
+        const movable = MY_SEATS.map((s, i) => s !== tableNum ? i : null).filter(i => i !== null);
+        if (movable.length === 1) {
+          replaceIndex = movable[0];
+          document.querySelectorAll('.seat-option')[movable[0]].classList.add('selected');
+          document.getElementById('replaceConfirmBtn').disabled = false;
+        } else {
+          document.getElementById('replaceConfirmBtn').disabled = true;
+        }
+        openModal('replaceModal');
+      }
+    }
+
+    function selectReplaceOption(idx, el) {
+      document.querySelectorAll('.seat-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      replaceIndex = idx;
+      document.getElementById('replaceConfirmBtn').disabled = false;
+    }
+
+    // ── Actions ───────────────────────────────────────────────────────────────
+    async function confirmSelect() {
+      closeModal('selectModal');
+      await doSeatAction('/seat/select', { table: pendingTable });
+    }
+
+    async function confirmChange() {
+      closeModal('changeModal');
+      await doSeatAction('/seat/change', { from_table: MY_SEATS[0], to_table: pendingTable });
+    }
+
+    async function confirmReplace() {
+      if (replaceIndex === null) return;
+      closeModal('replaceModal');
+      await doSeatAction('/seat/change', { from_table: MY_SEATS[replaceIndex], to_table: pendingTable });
+    }
+
+    async function doSeatAction(url, body) {
+      try {
+        const res  = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (data.success) {
+          MY_SEATS = data.my_seats;
+          refreshGrid(data.tables);
+          updateCurrentSeats();
+          fireConfetti();
+          document.getElementById('successMsg').textContent = data.message;
+          openModal('successModal');
+        } else {
+          if ((data.error || '').includes('paused for all students')) {
+            openModal('globalDisabledModal');
+            return;
+          }
+          showToast(data.error || 'Something went wrong.');
+        }
+      } catch { showToast('Network error. Please try again.'); }
+    }
+
+    function refreshGrid(tables) {
+      document.querySelectorAll('.table-card').forEach(card => {
+        const num     = parseInt(card.dataset.table);
+        const t       = tables.find(x => x.number === num);
+        if (!t) return;
+        const mineCount = MY_SEATS.filter(s => s === num).length;
+        const isMine    = mineCount > 0;
+
+        card.dataset.count = t.count;
+        card.onclick = () => handleTableClick(num, t.count, mineCount);
+        card.title   = `Table ${num} — ${t.count}/10 seats taken`;
+
+        card.classList.remove('full', 'partial', 'mine');
+        if (t.count >= 10 && !isMine) card.classList.add('full');
+        else if (t.count > 0)         card.classList.add('partial');
+        if (isMine)                    card.classList.add('mine');
+
+        // Update ✓ badge: show count if 2 seats at same table
+        card.querySelectorAll('.multi-badge').forEach(b => b.remove());
+        if (mineCount === 2) {
+          const badge = document.createElement('span');
+          badge.className = 'multi-badge';
+          badge.style.cssText = 'position:absolute;top:3px;left:6px;font-size:9px;font-weight:700;color:#75b798;';
+          badge.textContent = '×2';
+          card.appendChild(badge);
+        }
+
+        card.querySelectorAll('.seat-dot').forEach((dot, i) => {
+          dot.classList.remove('taken', 'mine-dot');
+          if (i < t.count) {
+            if (isMine && i >= t.count - mineCount) dot.classList.add('mine-dot');
+            else dot.classList.add('taken');
+          }
+        });
+        card.querySelector('.table-count').textContent = `${t.count}/10`;
+      });
+    }
+
+    function updateCurrentSeats() {
+      let el = document.getElementById('currentSeats');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'currentSeats'; el.className = 'current-seats';
+        document.querySelector('.legend').before(el);
+      }
+      el.innerHTML = MY_SEATS.length === 0 ? '' :
+        MY_SEATS.map((s, i) => `<div class="seat-chip">🪑 Seat ${i+1}: Table ${s}</div>`).join('');
+    }
+
+    // ── Modal helpers ─────────────────────────────────────────────────────────
+    function openModal(id)  { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+      o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape')
+        document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    });
+
+    // ── Confetti ──────────────────────────────────────────────────────────────
+    function fireConfetti() {
+      const c = document.getElementById('confettiContainer');
+      const colors = ['#0d6efd','#0dcaf0','#198754','#ffc107','#6ea8fe','#f8f9fa','#dc3545'];
+      for (let i = 0; i < 60; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti-piece';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.animationDuration = (Math.random() * 1.4 + 1.1) + 's';
+        p.style.animationDelay = Math.random() * 0.4 + 's';
+        const sz = (Math.random() * 7 + 5) + 'px';
+        p.style.width = p.style.height = sz;
+        p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        c.appendChild(p);
+        p.addEventListener('animationend', () => p.remove());
+      }
+    }
+
+    // ── Toast ─────────────────────────────────────────────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>

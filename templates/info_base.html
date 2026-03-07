@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grad Social 2026 — Login</title>
+  <title>{% block title %}Grad Social 2026{% endblock %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -13,18 +13,19 @@
       --warning: #ffc107;
       --danger: #dc3545;
       --accent-glow: #0d6efd33;
+      --accent-light: #6ea8fe;
     }
 
     [data-theme="dark"] {
       --bg: transparent;
       --surface: rgba(8, 20, 49, 0.78);
       --surface2: rgba(12, 31, 72, 0.82);
+      --surface3: rgba(21, 45, 97, 0.78);
       --border: rgba(255, 255, 255, 0.34);
       --border-faint: rgba(255, 255, 255, 0.2);
       --text: #f7fbff;
       --muted: rgba(229, 242, 255, 0.72);
       --muted-light: rgba(243, 249, 255, 0.9);
-      --input-bg: rgba(255, 255, 255, 0.12);
       --shadow: 0 24px 62px #0014378c;
       --header-bg: rgba(5, 16, 43, 0.42);
       --header-border: rgba(255, 255, 255, 0.26);
@@ -33,6 +34,8 @@
       --control-border: rgba(255, 255, 255, 0.35);
       --control-text: rgba(255, 255, 255, 0.92);
       --control-hover: #ffffff;
+      --top-nav-bg: rgba(5, 16, 43, 0.3);
+      --top-nav-border: rgba(255, 255, 255, 0.2);
       --overlay-top: rgba(10, 26, 63, 0.58);
       --overlay-bottom: rgba(11, 18, 39, 0.36);
       --overlay-glow: #4ea0ff3b;
@@ -42,12 +45,12 @@
       --bg: transparent;
       --surface: rgba(255, 255, 255, 0.9);
       --surface2: rgba(247, 251, 255, 0.94);
+      --surface3: rgba(230, 238, 252, 0.95);
       --border: rgba(34, 66, 128, 0.24);
       --border-faint: rgba(34, 66, 128, 0.14);
       --text: #1f3264;
       --muted: #445d92;
       --muted-light: #2a4279;
-      --input-bg: rgba(255, 255, 255, 0.92);
       --shadow: 0 20px 52px #0f2b6026;
       --header-bg: rgba(255, 255, 255, 0.7);
       --header-border: rgba(35, 66, 128, 0.22);
@@ -56,6 +59,8 @@
       --control-border: rgba(35, 66, 128, 0.28);
       --control-text: #1f3264;
       --control-hover: #15316b;
+      --top-nav-bg: rgba(255, 255, 255, 0.58);
+      --top-nav-border: rgba(35, 66, 128, 0.2);
       --overlay-top: rgba(244, 248, 255, 0.46);
       --overlay-bottom: rgba(219, 232, 255, 0.2);
       --overlay-glow: #74a7ff2b;
@@ -65,13 +70,13 @@
 
     body {
       min-height: 100vh;
-      font-family: 'Akshar', sans-serif;
       background: var(--bg);
       background-image: url('/assets/img/HomeBackground.png');
       background-size: cover;
       background-position: top;
       background-attachment: fixed;
       color: var(--text);
+      font-family: 'Akshar', sans-serif;
       transition: background 0.25s, color 0.25s;
     }
 
@@ -87,12 +92,14 @@
     }
 
     header {
-      position: relative;
-      z-index: 10;
-      padding: 0.85rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 0.85rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 0.9rem;
       background: var(--header-bg);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -103,26 +110,27 @@
       font-family: 'Akshar', sans-serif;
       font-size: 1.45rem;
       color: var(--header-text);
-      text-decoration: none;
       letter-spacing: 0.04em;
+      text-decoration: none;
+      white-space: nowrap;
     }
     .logo span { color: var(--header-text); }
 
-    .header-right { display: flex; align-items: center; gap: 0.85rem; }
+    .header-right { display: flex; align-items: center; gap: 0.7rem; }
 
     .theme-toggle {
       background: var(--control-bg);
       border: 1px solid var(--control-border);
       border-radius: 999px;
-      padding: 0.3rem 0.5rem;
+      padding: 0.3rem 0.55rem;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: var(--control-text);
       transition: all 0.18s;
     }
     .theme-toggle:hover { border-color: var(--control-hover); color: var(--control-hover); }
 
-    .nav-btn {
+    .header-btn {
       color: var(--control-text);
       text-decoration: none;
       font-size: 0.82rem;
@@ -130,114 +138,134 @@
       padding: 0.34rem 0.85rem;
       border-radius: 6px;
       transition: all 0.18s;
+      white-space: nowrap;
     }
-    .nav-btn:hover { color: var(--control-hover); border-color: var(--control-hover); }
+    .header-btn:hover { color: var(--control-hover); border-color: var(--control-hover); }
+
+    .top-nav {
+      position: sticky;
+      top: 63px;
+      z-index: 40;
+      background: var(--top-nav-bg);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      border-bottom: 1px solid var(--top-nav-border);
+      padding: 0.55rem 1.5rem;
+    }
+
+    .top-nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.2rem 0.75rem;
+      flex-wrap: wrap;
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      color: var(--control-text);
+      font-size: 1rem;
+      border-bottom: 2px solid transparent;
+      padding: 0.2rem 0.2rem 0.18rem;
+      transition: all 0.16s;
+      display: inline-flex;
+      align-items: center;
+      line-height: 1.2;
+    }
+    .top-nav a:hover { color: var(--control-hover); border-bottom-color: var(--control-hover); }
+    .top-nav a.active {
+      color: var(--control-hover);
+      border-bottom-color: var(--control-hover);
+    }
 
     main {
       position: relative;
       z-index: 1;
-      min-height: calc(100vh - 66px);
-      display: grid;
-      place-items: center;
-      padding: 2rem 1rem;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 1.8rem 1.2rem 3.2rem;
     }
 
-    .login-card {
-      width: 100%;
-      max-width: 440px;
-      background: linear-gradient(155deg, #0d6efd2b, transparent 55%), var(--surface);
+    .panel {
+      background: var(--surface);
       border: 1px solid var(--border-faint);
-      border-radius: 16px;
+      border-radius: 14px;
       box-shadow: var(--shadow);
-      padding: 1.6rem 1.4rem;
+      padding: 1.25rem 1.15rem;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
 
-    .card-title {
+    h1 {
       font-family: 'Akshar', sans-serif;
-      font-size: 1.7rem;
-      margin-bottom: 0.3rem;
       color: var(--text);
-      text-align: center;
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
     }
 
-    .card-sub {
-      text-align: center;
+    .sub {
       color: var(--muted);
-      font-size: 0.88rem;
-      margin-bottom: 1.15rem;
+      font-size: 0.9rem;
+      margin-bottom: 1.1rem;
+      line-height: 1.6;
     }
 
-    .alert {
-      margin-bottom: 0.95rem;
-      border: 1px solid #842029;
-      background: #2c1215;
-      color: #ea868f;
-      border-radius: 8px;
-      padding: 0.6rem 0.75rem;
-      font-size: 0.83rem;
-    }
-    [data-theme="light"] .alert {
-      background: #f8d7da;
-      border-color: #f5c2c7;
-      color: #842029;
+    h2 {
+      font-family: 'Akshar', sans-serif;
+      color: var(--text);
+      font-size: 1.22rem;
+      margin: 1.2rem 0 0.55rem;
     }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      margin-bottom: 0.85rem;
-    }
-
-    label {
-      font-size: 0.8rem;
+    p { color: var(--muted-light); line-height: 1.65; font-size: 1rem; margin-bottom: 0.7rem; }
+    ul, ol {
+      margin: 0.55rem 0 0.9rem 1.15rem;
       color: var(--muted-light);
+      line-height: 1.7;
+      font-size: 1rem;
     }
 
-    input {
-      width: 100%;
-      background: var(--input-bg);
-      color: var(--text);
+    li { margin-bottom: 0.35rem; }
+
+    .note {
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.62rem 0.75rem;
-      font-size: 0.9rem;
-      transition: border-color 0.18s, box-shadow 0.18s;
-    }
-    input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 0.7rem 0.85rem;
+      color: var(--muted-light);
+      margin: 0.5rem 0 0.9rem;
+      font-size: 0.88rem;
     }
 
-    .submit-btn {
-      width: 100%;
-      border: 1px solid var(--primary);
-      background: var(--primary);
-      color: #fff;
-      border-radius: 8px;
-      padding: 0.65rem 0.85rem;
+    .qa h3 {
+      margin: 1rem 0 0.25rem;
+      font-size: 1rem;
+      color: var(--text);
       font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.18s;
-      margin-top: 0.35rem;
-    }
-    .submit-btn:hover { background: #0b5ed7; }
-
-    .hint {
-      margin-top: 0.95rem;
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--muted);
     }
 
-    @media (max-width: 680px) {
-      header { padding: 0.75rem 1rem; }
+    .qa p { margin-bottom: 0.55rem; }
+
+    a {
+      color: #9bc6ff;
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 740px) {
+      header {
+        padding: 0.75rem 0.9rem;
+      }
       .logo { font-size: 1.2rem; }
-      .login-card { padding: 1.25rem 1rem; }
+      .top-nav {
+        top: 58px;
+        padding: 0.55rem 0.9rem;
+      }
+      main { padding: 1.1rem 0.8rem 2.4rem; }
+      .panel { padding: 0.95rem 0.85rem; }
     }
   </style>
 </head>
@@ -246,33 +274,28 @@
     <a class="logo" href="/">Grad Social <span>2026</span></a>
     <div class="header-right">
       <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️</button>
-      <a class="nav-btn" href="/">Home</a>
+      <a class="header-btn" href="/login">Login</a>
     </div>
   </header>
 
+  <nav class="top-nav">
+    <ul>
+      <li><a href="/" class="{% if active_page == 'home' %}active{% endif %}">Home</a></li>
+      <li><a href="/important-dates" class="{% if active_page == 'important-dates' %}active{% endif %}">Important Dates</a></li>
+      <li><a href="/table-seating" class="{% if active_page == 'table-seating' %}active{% endif %}">Table Seating</a></li>
+      <li><a href="/mock-awards" class="{% if active_page == 'mock-awards' %}active{% endif %}">Mock Awards</a></li>
+      <li><a href="/forms" class="{% if active_page == 'forms' %}active{% endif %}">Forms</a></li>
+      <li><a href="/menu" class="{% if active_page == 'menu' %}active{% endif %}">Menu</a></li>
+      <li><a href="/rules" class="{% if active_page == 'rules' %}active{% endif %}">Rules</a></li>
+      <li><a href="/faq" class="{% if active_page == 'faq' %}active{% endif %}">FAQ</a></li>
+      <li><a href="/gowns-for-grads" class="{% if active_page == 'gowns-for-grads' %}active{% endif %}">Gowns for Grads</a></li>
+    </ul>
+  </nav>
+
   <main>
-    <section class="login-card">
-      <h1 class="card-title">Welcome Back</h1>
-      <p class="card-sub">Sign in to continue to Grad Social 2026.</p>
-
-      {% if error %}
-      <div class="alert" role="alert">{{ error }}</div>
-      {% endif %}
-
-      <form method="post" action="/login">
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" name="email" placeholder="you@ddsbstudent.ca" required>
-        </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" type="password" name="password" placeholder="••••••••" required>
-        </div>
-        <button class="submit-btn" type="submit">Log In</button>
-      </form>
-
-      <p class="hint">Need access? Contact your teacher organizer.</p>
-    </section>
+    <div class="panel">
+      {% block content %}{% endblock %}
+    </div>
   </main>
 
   <script>

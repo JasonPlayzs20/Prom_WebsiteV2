@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grad Social 2026 — Teacher Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ... (keep all existing styles exactly as in the original) ... */
+    :root {
+      --primary:      #0d6efd;
+      --success:      #198754;
+      --info:         #0dcaf0;
+      --warning:      #ffc107;
+      --danger:       #dc3545;
+      --accent-glow:  #0d6efd33;
+      --accent-light: #6ea8fe;
+    }
+    [data-theme="dark"] {
+      --bg:            transparent;
+      --surface:       rgba(8, 20, 49, 0.78);
+      --surface2:      rgba(12, 31, 72, 0.82);
+      --surface3:      rgba(21, 45, 97, 0.78);
+      --border:        rgba(255, 255, 255, 0.34);
+      --border-faint:  rgba(255, 255, 255, 0.2);
+      --text:          #f7fbff;
+      --muted:         rgba(229, 242, 255, 0.72);
+      --muted-light:   rgba(243, 249, 255, 0.9);
+      --table-empty:   rgba(255, 255, 255, 0.1);
+      --table-partial: rgba(35, 123, 254, 0.4);
+      --table-full:    rgba(255, 255, 255, 0.22);
+      --table-mine:    rgba(25, 135, 84, 0.45);
+      --modal-bg:      rgba(7, 19, 49, 0.92);
+      --shadow:        0 24px 62px #0014378c;
+      --row-hover:     rgba(255, 255, 255, 0.08);
+      --input-bg:      rgba(255, 255, 255, 0.12);
+      --input-border:  rgba(255, 255, 255, 0.4);
+      --header-bg:     rgba(5, 16, 43, 0.42);
+      --header-border: rgba(255, 255, 255, 0.26);
+      --header-text:   rgba(255, 255, 255, 0.95);
+      --control-bg:    rgba(255, 255, 255, 0.13);
+      --control-border: rgba(255, 255, 255, 0.35);
+      --control-text:  rgba(255, 255, 255, 0.92);
+      --control-hover: #ffffff;
+      --overlay-top:   rgba(10, 26, 63, 0.58);
+      --overlay-bottom: rgba(11, 18, 39, 0.36);
+      --overlay-glow:  #4ea0ff3b;
+    }
+    [data-theme="light"] {
+      --bg:            transparent;
+      --surface:       rgba(255, 255, 255, 0.9);
+      --surface2:      rgba(247, 251, 255, 0.94);
+      --surface3:      rgba(230, 238, 252, 0.95);
+      --border:        rgba(34, 66, 128, 0.24);
+      --border-faint:  rgba(34, 66, 128, 0.14);
+      --text:          #1f3264;
+      --muted:         #445d92;
+      --muted-light:   #2a4279;
+      --table-empty:   #ffffffd9;
+      --table-partial: #bfd8ff;
+      --table-full:    #dce6f9;
+      --table-mine:    #cdeedc;
+      --modal-bg:      rgba(255, 255, 255, 0.96);
+      --shadow:        0 20px 52px #0f2b6026;
+      --row-hover:     rgba(43, 74, 140, 0.09);
+      --input-bg:      rgba(255, 255, 255, 0.92);
+      --input-border:  rgba(34, 66, 128, 0.28);
+      --header-bg:     rgba(255, 255, 255, 0.7);
+      --header-border: rgba(35, 66, 128, 0.22);
+      --header-text:   #1f3264;
+      --control-bg:    rgba(255, 255, 255, 0.78);
+      --control-border: rgba(35, 66, 128, 0.28);
+      --control-text:  #1f3264;
+      --control-hover: #15316b;
+      --overlay-top:   rgba(244, 248, 255, 0.46);
+      --overlay-bottom: rgba(219, 232, 255, 0.2);
+      --overlay-glow:  #74a7ff2b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      background-image: url('/assets/img/HomeBackground.png');
+      background-size: cover;
+      background-position: top;
+      background-attachment: fixed;
+      color: var(--text);
+      font-family: 'Akshar', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.25s, color 0.25s;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(180deg, var(--overlay-top), var(--overlay-bottom)),
+        radial-gradient(ellipse at 10% 8%, var(--overlay-glow) 0%, transparent 58%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ── */
+    header { position: sticky; top: 0; z-index: 50; padding: 0.85rem 2rem; display: flex; align-items: center; justify-content: space-between; background: var(--header-bg); border-bottom: 1px solid var(--header-border); transition: background 0.25s; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .logo { font-family: 'Akshar', sans-serif; font-size: 1.5rem; color: var(--header-text); letter-spacing: 0.04em; text-decoration: none; }
+    .logo span { color: var(--header-text); }
+    .logo .badge { background: var(--warning); color: #000; font-family: 'Akshar', sans-serif; font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; vertical-align: middle; margin-left: 0.5rem; letter-spacing: 0.05em; }
+    .header-right { display: flex; align-items: center; gap: 0.85rem; }
+    .user-info { font-size: 0.88rem; color: var(--muted); }
+    .user-info strong { color: var(--text); }
+    .theme-toggle { background: var(--control-bg); border: 1px solid var(--control-border); border-radius: 999px; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 1rem; line-height: 1; color: var(--control-text); transition: all 0.18s; }
+    .theme-toggle:hover { border-color: var(--control-hover); color: var(--control-hover); }
+    .logout-btn { color: var(--control-text); text-decoration: none; font-size: 0.82rem; border: 1px solid var(--control-border); padding: 0.3rem 0.85rem; border-radius: 6px; transition: all 0.18s; }
+    .logout-btn:hover { color: var(--control-hover); border-color: var(--control-hover); }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; border-bottom: 2px solid var(--border-faint); background: var(--surface); padding: 0 2rem; transition: background 0.25s; }
+    .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -2px; padding: 0.85rem 1.4rem; font-family: 'Akshar', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 0.45rem; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    main { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .section-header h2 { font-family: 'Akshar', sans-serif; font-size: 1.6rem; color: var(--text); }
+
+    .toolbar { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .search-input { background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 7px; padding: 0.45rem 0.9rem; color: var(--text); font-family: 'Akshar', sans-serif; font-size: 0.88rem; width: 220px; transition: border-color 0.18s; }
+    .search-input:focus { outline: none; border-color: var(--primary); }
+    .search-input::placeholder { color: var(--muted); }
+    .filter-select { background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 7px; padding: 0.45rem 0.75rem; color: var(--text); font-family: 'Akshar', sans-serif; font-size: 0.85rem; cursor: pointer; }
+    .filter-select:focus { outline: none; border-color: var(--primary); }
+    .global-picking-control { display: inline-flex; align-items: center; gap: 0.55rem; background: var(--surface2); border: 1px solid var(--border-faint); border-radius: 999px; padding: 0.25rem 0.55rem; }
+    .global-picking-label { font-size: 0.75rem; color: var(--muted-light); white-space: nowrap; }
+    .global-picking-status { font-size: 0.74rem; font-weight: 600; min-width: 56px; text-align: right; }
+
+    /* ── Stats ── */
+    .stats-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border-faint); border-radius: 10px; padding: 0.85rem 1.3rem; flex: 1; min-width: 130px; transition: background 0.25s; }
+    .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat-value { font-family: 'Akshar', sans-serif; font-size: 1.8rem; line-height: 1.1; margin-top: 0.2rem; }
+    .stat-value.blue   { color: var(--primary); }
+    .stat-value.green  { color: var(--success); }
+    .stat-value.yellow { color: var(--warning); }
+    .stat-value.red    { color: var(--danger); }
+
+    /* ── Student table ── */
+    .student-table-wrap { background: var(--surface); border: 1px solid var(--border-faint); border-radius: 12px; overflow: hidden; transition: background 0.25s; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: var(--surface2); padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); border-bottom: 1px solid var(--border-faint); white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--border-faint); transition: background 0.14s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--row-hover); }
+    tbody td { padding: 0.7rem 1rem; font-size: 0.88rem; vertical-align: middle; }
+    .td-name { font-weight: 500; color: var(--text); }
+    .td-email { color: var(--muted); font-size: 0.82rem; }
+
+    /* ── Toggle switch — BIGGER & EASIER TO CLICK ── */
+    .toggle-cell { display: flex; align-items: center; gap: 0.6rem; }
+
+    .toggle-pill {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 52px;
+      height: 28px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .toggle-pill input {
+      /* hidden but still covers full pill area for easy clicking */
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 2;
+      margin: 0;
+    }
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: var(--surface3);
+      border: 1.5px solid var(--border);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .toggle-thumb {
+      position: absolute;
+      left: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), background 0.2s;
+      z-index: 1;
+    }
+    .toggle-pill input:checked ~ .toggle-track { background: var(--success); border-color: var(--success); }
+    .toggle-pill input:checked ~ .toggle-thumb { transform: translateY(-50%) translateX(24px); background: #fff; }
+    .toggle-pill:hover .toggle-track { border-color: var(--primary); }
+    .toggle-pill input:checked:hover ~ .toggle-track { border-color: #157347; }
+
+    /* ── Seat chips ── */
+    .seat-chips { display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center; }
+    .seat-chip-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--table-mine);
+      border: 1px solid var(--success);
+      border-radius: 5px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.78rem;
+      color: #75b798;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .seat-chip-sm:hover { background: #0f5132; }
+    [data-theme="light"] .seat-chip-sm { color: #0f5132; }
+    [data-theme="light"] .seat-chip-sm:hover { background: #a3cfbb; }
+    .chip-remove {
+      font-size: 0.65rem;
+      opacity: 0.7;
+      cursor: pointer;
+      padding: 1px 2px;
+      border-radius: 3px;
+      transition: opacity 0.15s, background 0.15s;
+      line-height: 1;
+    }
+    .chip-remove:hover { opacity: 1; background: #dc354544; }
+    .seat-chip-none { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+
+    /* ── Buttons ── */
+    .btn { padding: 0.4rem 0.9rem; border-radius: 6px; font-family: 'Akshar', sans-serif; font-size: 0.82rem; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.16s; }
+    .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+    .btn-primary   { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-primary:hover   { background: #0b5ed7; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--muted-light); border-color: var(--border); }
+    .btn-secondary:hover { color: var(--text); border-color: var(--muted-light); }
+    .btn-danger    { background: var(--danger); color: #fff; border-color: var(--danger); }
+    .btn-danger:hover    { background: #bb2d3b; }
+    .btn-warning   { background: var(--warning); color: #000; border-color: var(--warning); }
+    .btn-warning:hover   { background: #ffca2c; }
+    .btn:disabled  { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+
+    /* ── Seating plan tab ── */
+    .seating-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start; }
+    @media (max-width: 900px) { .seating-layout { grid-template-columns: 1fr; } }
+
+    .legend { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; font-size: 0.78rem; color: var(--muted); }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid; }
+    .dot-available { background: var(--table-empty);   border-color: var(--border); }
+    .dot-partial   { background: var(--table-partial); border-color: var(--primary); }
+    .dot-full      { background: var(--table-full);    border-color: var(--border); opacity: 0.5; }
+
+    .venue-label { text-align: center; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; }
+    .stage { background: linear-gradient(135deg, #0d6efd18, #0d6efd08); border: 1px solid #0d6efd55; border-radius: 6px; text-align: center; padding: 0.45rem 2rem; color: var(--primary); font-size: 0.78rem; letter-spacing: 0.12em; max-width: 180px; margin: 0 auto 1.5rem; font-weight: 500; }
+
+    .table-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+    @media (max-width: 680px) { .table-grid { grid-template-columns: repeat(5, 1fr); } }
+
+    .table-card {
+      aspect-ratio: 1; border-radius: 8px; border: 1.5px solid var(--border-faint);
+      background: var(--table-empty); cursor: pointer; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3px;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, background 0.15s;
+      position: relative; user-select: none; overflow: hidden;
+    }
+    .table-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0%, #0d6efd18, transparent 70%); opacity: 0; transition: opacity 0.18s; }
+    .table-card:hover::before { opacity: 1; }
+    .table-card:hover { transform: translateY(-2px) scale(1.04); box-shadow: 0 5px 18px var(--accent-glow); border-color: var(--primary); }
+    .table-card.partial { background: var(--table-partial); border-color: #0d6efd55; }
+    [data-theme="light"] .table-card.partial { border-color: #9ec5fe; }
+    .table-card.full { background: var(--table-full); border-color: var(--border-faint); opacity: 0.5; cursor: not-allowed; }
+    .table-card.full:hover { transform: none; box-shadow: none; border-color: var(--border-faint); }
+    .table-card.selected-view { border-color: var(--warning) !important; box-shadow: 0 0 14px #ffc10744 !important; background: #332700 !important; }
+    [data-theme="light"] .table-card.selected-view { background: #fff3cd !important; }
+    /* picker mode highlight */
+    .table-card.pick-target { border-color: var(--primary) !important; box-shadow: 0 0 14px var(--accent-glow) !important; background: #0d3a80 !important; }
+    [data-theme="light"] .table-card.pick-target { background: #cfe2ff !important; }
+    .table-card.pick-source { border-color: var(--danger) !important; box-shadow: 0 0 10px #dc354444 !important; background: #3a0a0a !important; opacity: 1 !important; }
+    [data-theme="light"] .table-card.pick-source { background: #f8d7da !important; }
+
+    .table-num { font-family: 'Akshar', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--muted-light); line-height: 1; }
+    .table-card:hover .table-num { color: var(--text); }
+    .table-card.partial .table-num { color: var(--accent-light); }
+    [data-theme="light"] .table-card.partial .table-num { color: #0a58ca; }
+    .table-card.full .table-num { color: var(--border); }
+    .table-count { font-size: 0.58rem; color: var(--muted); }
+    .seat-dots { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; max-width: 30px; }
+    .seat-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border-faint); }
+    [data-theme="light"] .seat-dot { background: #dee2e6; }
+    .seat-dot.taken { background: #6c757d; }
+
+    /* ── Detail panel ── */
+    .detail-panel { background: var(--surface); border: 1px solid var(--border-faint); border-radius: 12px; padding: 1.5rem; transition: background 0.25s; position: sticky; top: 110px; }
+    .detail-panel h3 { font-family: 'Akshar', sans-serif; font-size: 1.2rem; color: var(--text); margin-bottom: 1rem; }
+    .detail-empty { color: var(--muted); font-size: 0.88rem; text-align: center; padding: 2rem 0; }
+    .detail-student { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--border-faint); gap: 0.5rem; }
+    .detail-student:last-child { border-bottom: none; }
+    .detail-student-name { font-weight: 500; font-size: 0.88rem; color: var(--text); }
+    .detail-student-sub  { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
+    .detail-actions { display: flex; gap: 0.4rem; flex-shrink: 0; }
+
+    /* ── Modals ── */
+    .modal-overlay { position: fixed; inset: 0; background: #000000aa; backdrop-filter: blur(5px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.22s; }
+    [data-theme="light"] .modal-overlay { background: #00000044; }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal { background: var(--modal-bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem 1.75rem; max-width: 680px; width: 96%; box-shadow: var(--shadow); transform: translateY(20px) scale(0.97); transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s, background 0.25s; opacity: 0; max-height: 90vh; overflow-y: auto; }
+    .modal-overlay.active .modal { transform: translateY(0) scale(1); opacity: 1; }
+    .modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.25rem; }
+    .modal-header h2 { font-family: 'Akshar', sans-serif; font-size: 1.3rem; color: var(--text); }
+    .modal-close { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1.3rem; line-height: 1; padding: 0.1rem; transition: color 0.15s; }
+    .modal-close:hover { color: var(--text); }
+    .modal-sub { color: var(--muted-light); font-size: 0.85rem; margin-bottom: 1rem; }
+    .modal-sub strong { color: var(--text); }
+    .modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; flex-wrap: wrap; margin-top: 1.25rem; border-top: 1px solid var(--border-faint); padding-top: 1rem; }
+
+    /* ── Seat picker grid (inside modal) ── */
+    .picker-hint { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .picker-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-bottom: 0.5rem; }
+    @media (max-width: 500px) { .picker-grid { grid-template-columns: repeat(5, 1fr); } }
+
+    .pick-card {
+      aspect-ratio: 1; border-radius: 7px; border: 1.5px solid var(--border-faint);
+      background: var(--table-empty); cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; transition: all 0.15s; position: relative; user-select: none; overflow: hidden;
+    }
+    .pick-card:hover { border-color: var(--primary); box-shadow: 0 3px 12px var(--accent-glow); transform: scale(1.05); }
+    .pick-card.pick-partial { background: var(--table-partial); border-color: #0d6efd55; }
+    [data-theme="light"] .pick-card.pick-partial { border-color: #9ec5fe; }
+    .pick-card.pick-full { background: var(--table-full); border-color: var(--border-faint); opacity: 0.35; cursor: not-allowed; }
+    .pick-card.pick-full:hover { transform: none; box-shadow: none; border-color: var(--border-faint); }
+    .pick-card.pick-chosen { border-color: var(--primary) !important; background: #0d3a80 !important; box-shadow: 0 0 14px var(--accent-glow) !important; }
+    [data-theme="light"] .pick-card.pick-chosen { background: #cfe2ff !important; }
+    .pick-card.pick-current { border-color: var(--danger) !important; background: #3a0a0a !important; cursor: default; }
+    [data-theme="light"] .pick-card.pick-current { background: #f8d7da !important; }
+    .pick-card.pick-current:hover { transform: none; box-shadow: none; }
+    .pick-num { font-family: 'Akshar', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--muted-light); line-height: 1; }
+    .pick-card:hover .pick-num { color: var(--text); }
+    .pick-card.pick-partial .pick-num { color: var(--accent-light); }
+    [data-theme="light"] .pick-card.pick-partial .pick-num { color: #0a58ca; }
+    .pick-card.pick-chosen .pick-num { color: #fff; }
+    [data-theme="light"] .pick-card.pick-chosen .pick-num { color: #084298; }
+    .pick-card.pick-current .pick-num { color: #ea868f; }
+    .pick-count { font-size: 0.55rem; color: var(--muted); }
+    .pick-card.pick-full .pick-num { color: var(--border); }
+
+    .picker-legend { display: flex; gap: 1rem; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .picker-legend-item { display: flex; align-items: center; gap: 0.35rem; }
+    .picker-legend-dot { width: 10px; height: 10px; border-radius: 2px; border: 1px solid; }
+    .pl-current  { background: #3a0a0a; border-color: var(--danger); }
+    .pl-chosen   { background: #0d3a80; border-color: var(--primary); }
+    .pl-avail    { background: var(--table-empty); border-color: var(--border); }
+    [data-theme="light"] .pl-current { background: #f8d7da; }
+    [data-theme="light"] .pl-chosen  { background: #cfe2ff; }
+
+    .selected-table-info { text-align: center; margin-bottom: 0.75rem; font-size: 0.88rem; color: var(--muted-light); min-height: 1.4em; }
+    .selected-table-info strong { color: var(--primary); }
+
+    /* ── Remove modal ── */
+    .modal.modal-sm { max-width: 380px; }
+    .modal-icon { font-size: 2rem; text-align: center; margin-bottom: 0.6rem; }
+    .modal-body-center { text-align: center; }
+    .modal-body-center p { color: var(--muted-light); font-size: 0.88rem; line-height: 1.6; margin-bottom: 0; }
+    .modal-body-center strong { color: var(--text); }
+    .modal-actions-center { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1.25rem; }
+    .seat-choice-list { display: grid; gap: 0.45rem; margin-top: 0.35rem; }
+    .seat-choice-option {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.55rem 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text);
+      cursor: pointer;
+      font-family: 'Akshar', sans-serif;
+      font-size: 0.85rem;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    }
+    .seat-choice-option:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .seat-choice-option.active { border-color: var(--primary); background: #0d6efd22; }
+    .seat-choice-option strong { font-family: 'Akshar', sans-serif; font-size: 0.95rem; }
+    [data-theme="light"] .seat-choice-option.active { background: #cfe2ff; }
+
+    /* ── Toast ── */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 1.3rem; color: var(--text); font-size: 0.88rem; z-index: 300; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); white-space: nowrap; box-shadow: 0 6px 24px #00000033; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .empty-row td { text-align: center; color: var(--muted); padding: 2rem; font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a class="logo" href="/">Grad Social <span>2026</span><span class="badge">TEACHER</span></a>
+    <div class="header-right">
+      <div class="user-info">Welcome, <strong>{{ user_name }}</strong></div>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️</button>
+      <a href="/logout" class="logout-btn">Log out</a>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('students', this)"><span>👥</span> Students</button>
+    <button class="tab-btn" onclick="switchTab('seating', this)"><span>🪑</span> Seating Plan</button>
+  </div>
+
+  <main>
+
+    <!-- ══ STUDENTS TAB ══ -->
+    <div class="tab-content active" id="tab-students">
+      <div class="section-header">
+        <h2>Student Management</h2>
+        <div class="toolbar">
+          <input class="search-input" type="text" placeholder="🔍 Search name or email…" oninput="filterStudents()" id="searchInput" />
+          <select class="filter-select" onchange="filterStudents()" id="filterStatus">
+            <option value="all">All students</option>
+            <option value="enabled">Enabled</option>
+            <option value="disabled">Not enabled</option>
+            <option value="seated">Has seat</option>
+            <option value="unseated">No seat yet</option>
+          </select>
+          <div class="global-picking-control">
+            <span class="global-picking-label">Seat Picking</span>
+            <label class="toggle-pill">
+              <input
+                type="checkbox"
+                id="globalSeatPickingToggle"
+                {% if seat_picking_enabled %}checked{% endif %}
+                onchange="toggleGlobalSeatPicking(this)"
+              >
+              <span class="toggle-track"></span>
+              <span class="toggle-thumb"></span>
+            </label>
+            <span class="global-picking-status" id="globalSeatPickingStatus">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-card"><div class="stat-label">Total Students</div><div class="stat-value blue"  id="statTotal">—</div></div>
+        <div class="stat-card"><div class="stat-label">Enabled</div>       <div class="stat-value green" id="statEnabled">—</div></div>
+        <div class="stat-card"><div class="stat-label">Seated</div>        <div class="stat-value green" id="statSeated">—</div></div>
+        <div class="stat-card"><div class="stat-label">2-Ticket</div>      <div class="stat-value yellow" id="statDouble">—</div></div>
+        <div class="stat-card"><div class="stat-label">Not Enabled</div>   <div class="stat-value red"   id="statDisabled">—</div></div>
+      </div>
+
+      <div class="student-table-wrap">
+        <table id="studentTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Enabled</th>
+              <th>2nd Ticket</th>
+              <th>Seats</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentTbody">
+            <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--muted)">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ SEATING TAB ══ -->
+    <div class="tab-content" id="tab-seating">
+      <div class="section-header">
+        <h2>Seating Plan</h2>
+        <span style="font-size:0.85rem;color:var(--muted)">Click a table to view occupants</span>
+      </div>
+      <div class="seating-layout">
+        <div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot dot-available"></div> Available</div>
+            <div class="legend-item"><div class="legend-dot dot-partial"></div> Partially Filled</div>
+            <div class="legend-item"><div class="legend-dot dot-full"></div> Full</div>
+          </div>
+          <div class="venue-label">— VENUE LAYOUT —</div>
+          <div class="stage">▲ STAGE ▲</div>
+          <div class="table-grid" id="teacherTableGrid">
+            {% for t in tables %}
+            <div class="table-card {% if t.count >= 10 %}full{% elif t.count > 0 %}partial{% endif %}"
+              data-table="{{ t.number }}" data-count="{{ t.count }}"
+              onclick="selectTableView({{ t.number }})"
+              title="Table {{ t.number }} — {{ t.count }}/10">
+              <div class="table-num">{{ t.number }}</div>
+              <div class="seat-dots">{% for i in range(10) %}<div class="seat-dot {% if i < t.count %}taken{% endif %}"></div>{% endfor %}</div>
+              <div class="table-count">{{ t.count }}/10</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="detail-panel" id="detailPanel">
+          <h3 id="detailTitle">Select a Table</h3>
+          <div class="detail-empty" id="detailEmpty">Click any table to see who's seated there.</div>
+          <div id="detailList" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══ Modal: Seat Picker (move/assign) ══ -->
+  <div class="modal-overlay" id="seatPickerModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="pickerTitle">Move Seat</h2>
+        <button class="modal-close" onclick="closeModal('seatPickerModal')">✕</button>
+      </div>
+      <div class="modal-sub" id="pickerSub">Pick a new table for <strong>—</strong></div>
+
+      <div class="picker-legend">
+        <div class="picker-legend-item"><div class="picker-legend-dot pl-current"></div> Current seat</div>
+        <div class="picker-legend-item"><div class="picker-legend-dot pl-chosen"></div> Selected</div>
+        <div class="picker-legend-item"><div class="picker-legend-dot pl-avail"></div> Available</div>
+      </div>
+
+      <div class="picker-hint">Click a table to select it as the destination.</div>
+      <div class="picker-grid" id="pickerGrid"></div>
+      <div class="selected-table-info" id="pickerSelection">No table selected yet</div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('seatPickerModal')">Cancel</button>
+        <button class="btn btn-primary" id="pickerConfirmBtn" onclick="confirmPickerSeat()" disabled>Confirm Move</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Remove Seat ══ -->
+  <div class="modal-overlay" id="removeSeatModal">
+    <div class="modal modal-sm">
+      <div class="modal-icon">🗑️</div>
+      <div class="modal-body-center">
+        <h2 style="font-family:'Akshar', sans-serif;font-size:1.2rem;color:var(--text);margin-bottom:0.5rem">Remove Seat?</h2>
+        <p>Remove <strong id="removeStudentName">—</strong>'s seat at <strong>Table <span id="removeTableNum">—</span></strong>?<br>They can re-select later.</p>
+      </div>
+      <div class="modal-actions-center">
+        <button class="btn btn-secondary" onclick="closeModal('removeSeatModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmRemoveSeat()">Yes, Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Choose Seat (for max-seat move / disable 2nd ticket) ══ -->
+  <div class="modal-overlay" id="seatChoiceModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 id="seatChoiceTitle">Choose Seat</h2>
+        <button class="modal-close" onclick="closeModal('seatChoiceModal')">✕</button>
+      </div>
+      <div class="modal-sub" id="seatChoiceSub">Select which seat to use.</div>
+      <div class="seat-choice-list" id="seatChoiceList"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal('seatChoiceModal')">Cancel</button>
+        <button class="btn btn-primary" id="seatChoiceConfirmBtn" onclick="confirmSeatChoice()" disabled>Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Success ══ -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal modal-sm">
+      <div class="modal-icon">✅</div>
+      <div class="modal-body-center">
+        <h2 style="font-family:'Akshar', sans-serif;font-size:1.2rem;color:var(--text);margin-bottom:0.5rem">Done!</h2>
+        <p id="successMsg">Action completed.</p>
+      </div>
+      <div class="modal-actions-center">
+        <button class="btn btn-primary" onclick="closeModal('successModal')">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let ALL_STUDENTS = [];
+    let ALL_TABLES = {{ tables | tojson }};
+    let TABLE_NUMBERS = ALL_TABLES.map(t => t.number);
+
+    let selectedViewTable = null;
+
+    // picker state
+    let pickerUserId    = null;
+    let pickerFromTable = null;
+    let pickerToTable   = null;
+    let pickerIsAssign  = false;
+
+    // remove state
+    let pendingRemoveUserId = null;
+    let pendingRemoveTable  = null;
+
+    // seat choice modal state
+    let seatChoiceMode = null; // "move_at_max" | "disable_second"
+    let seatChoiceUserId = null;
+    let seatChoiceUserName = '';
+    let seatChoiceSelectedTable = null;
+    let globalSeatPickingEnabled = {{ 'true' if seat_picking_enabled else 'false' }};
+
+    // ── Theme ────────────────────────────────────────────────────────────────
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('prom-theme', t);
+    }
+    function toggleTheme() { applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+    applyTheme(localStorage.getItem('prom-theme') || 'dark');
+
+    // ── Tabs ─────────────────────────────────────────────────────────────────
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ── Load students ─────────────────────────────────────────────────────────
+    async function loadStudents() {
+      try {
+        const res  = await fetch('/teacher/students');
+        const data = await res.json();
+        ALL_STUDENTS = data.students;
+        recomputeTablesFromStudents();
+        renderStudents(ALL_STUDENTS);
+        updateStats(ALL_STUDENTS);
+        if (selectedViewTable) selectTableView(selectedViewTable);
+      } catch (e) {
+        console.error('Failed to load students:', e);
+        showToast('Error loading student data.');
+      }
+    }
+
+    function renderStudents(students) {
+      const tbody = document.getElementById('studentTbody');
+      const currentFilter = document.getElementById('filterStatus').value;
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+      const filteredStudents = students.filter(s => {
+        const matchQ = s.name.toLowerCase().includes(searchTerm) || s.email.toLowerCase().includes(searchTerm);
+        let matchS = true;
+        if (currentFilter === 'enabled') matchS = s.enabled;
+        if (currentFilter === 'disabled') matchS = !s.enabled;
+        if (currentFilter === 'seated') matchS = s.seats.length > 0;
+        if (currentFilter === 'unseated') matchS = s.seats.length === 0;
+        return matchQ && matchS;
+      });
+
+      if (filteredStudents.length === 0) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No students match your filter.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filteredStudents.map((s, si) => `
+        <tr data-id="${s.id}" data-si="${si}" data-filtered-index="${si}">
+          <td class="td-name">${escHtml(s.name)}</td>
+          <td class="td-email">${escHtml(s.email)}</td>
+          <td>
+            <label class="toggle-pill">
+              <input type="checkbox" ${s.enabled ? 'checked' : ''} data-uid="${s.id}" data-field="enabled">
+              <span class="toggle-track"></span>
+              <span class="toggle-thumb"></span>
+            </label>
+          </td>
+          <td>
+            <label class="toggle-pill">
+              <input type="checkbox" ${s.hasSecondSeat ? 'checked' : ''} data-uid="${s.id}" data-field="hasSecondSeat">
+              <span class="toggle-track"></span>
+              <span class="toggle-thumb"></span>
+            </label>
+          </td>
+          <td>
+            ${s.seats.length === 0
+              ? '<span class="seat-chip-none">No seat</span>'
+              : '<div class="seat-chips">' + s.seats.map((t, ti) =>
+                  `<span class="seat-chip-sm" data-uid="${s.id}" data-table="${t}" data-ti="${ti}" title="Click to move">
+                    T${t}
+                    <span class="chip-remove" data-uid="${s.id}" data-table="${t}" data-remove="1" title="Remove seat">✕</span>
+                  </span>`
+                ).join('') + '</div>'
+            }
+          </td>
+          <td>
+            <button class="btn btn-sm btn-secondary" data-uid="${s.id}" data-name="${escHtml(s.name)}" data-assign="1">+ Seat</button>
+          </td>
+        </tr>
+      `).join('');
+
+      // Attach all listeners
+      tbody.querySelectorAll('input[data-field]').forEach(inp => {
+        inp.addEventListener('change', () => {
+          const uid = parseInt(inp.dataset.uid);
+          const field = inp.dataset.field;
+          const nextValue = inp.checked;
+
+          if (field === 'hasSecondSeat' && !nextValue) {
+            const student = ALL_STUDENTS.find(s => s.id === uid);
+            if (student && student.seats.length > 1) {
+              // Keep UI in sync while waiting for teacher's seat choice.
+              inp.checked = true;
+              openSeatChoiceModal({
+                mode: 'disable_second',
+                userId: uid,
+                name: student.name,
+                seats: student.seats,
+                title: 'Disable 2nd Ticket',
+                subtitle: `Choose which seat to remove for <strong>${escHtml(student.name)}</strong>.`,
+                confirmLabel: 'Disable & Remove'
+              });
+              return;
+            }
+          }
+
+          toggleField(uid, field, nextValue);
+        });
+      });
+
+      tbody.querySelectorAll('.seat-chip-sm').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const uid = parseInt(chip.dataset.uid);
+          const table = parseInt(chip.dataset.table);
+          const student = ALL_STUDENTS.find(s => s.id === uid);
+          if (student) openSeatPicker(uid, student.name, table);
+        });
+      });
+
+      tbody.querySelectorAll('.chip-remove').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const uid = parseInt(btn.dataset.uid);
+          const table = parseInt(btn.dataset.table);
+          const student = ALL_STUDENTS.find(s => s.id === uid);
+          if (student) openRemoveSeat(uid, student.name, table);
+        });
+      });
+
+      tbody.querySelectorAll('button[data-assign]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uid = parseInt(btn.dataset.uid);
+          handleAssignSeat(uid);
+        });
+      });
+    }
+
+    function updateStats(students) {
+      document.getElementById('statTotal').textContent    = students.length;
+      document.getElementById('statEnabled').textContent  = students.filter(s => s.enabled).length;
+      document.getElementById('statSeated').textContent   = students.filter(s => s.seats.length > 0).length;
+      document.getElementById('statDouble').textContent   = students.filter(s => s.hasSecondSeat).length;
+      document.getElementById('statDisabled').textContent = students.filter(s => !s.enabled).length;
+    }
+
+    function filterStudents() {
+      renderStudents(ALL_STUDENTS);
+    }
+
+    function syncGlobalSeatPickingUi() {
+      const toggle = document.getElementById('globalSeatPickingToggle');
+      const status = document.getElementById('globalSeatPickingStatus');
+      if (!toggle || !status) return;
+      toggle.checked = !!globalSeatPickingEnabled;
+      status.textContent = globalSeatPickingEnabled ? 'Enabled' : 'Paused';
+      status.style.color = globalSeatPickingEnabled ? 'var(--success)' : 'var(--danger)';
+    }
+
+    async function toggleGlobalSeatPicking(inputEl) {
+      const desired = !!inputEl.checked;
+      inputEl.disabled = true;
+      try {
+        const res = await fetch('/teacher/settings/seat-picking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ enabled: desired })
+        });
+        const data = await res.json();
+        if (data.success) {
+          globalSeatPickingEnabled = !!data.enabled;
+          syncGlobalSeatPickingUi();
+          showToast(data.message);
+        } else {
+          inputEl.checked = !!globalSeatPickingEnabled;
+          showToast(data.error || 'Could not update global seat picking.');
+        }
+      } catch (e) {
+        console.error('Global seat picking toggle error:', e);
+        inputEl.checked = !!globalSeatPickingEnabled;
+        showToast('Network error while updating global setting.');
+      } finally {
+        inputEl.disabled = false;
+      }
+    }
+
+    function removeOneSeatByTable(seats, tableNumber) {
+      const next = [...seats];
+      const idx = next.indexOf(tableNumber);
+      if (idx >= 0) next.splice(idx, 1);
+      return next;
+    }
+
+    // ── Toggle ────────────────────────────────────────────────────────────────
+    async function toggleField(userId, field, value, seatTableToRemove = null) {
+      try {
+        const payload = { user_id: userId, field, value };
+        if (seatTableToRemove !== null) payload.seat_table_to_remove = seatTableToRemove;
+
+        const res = await fetch('/teacher/student/toggle', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          const s = ALL_STUDENTS.find(s => s.id === userId);
+          if (s) {
+            s[field] = value;
+            if (field === 'hasSecondSeat' && !value && seatTableToRemove !== null) {
+              s.seats = removeOneSeatByTable(s.seats, seatTableToRemove);
+              recomputeTablesFromStudents();
+              if (selectedViewTable) selectTableView(selectedViewTable);
+            }
+          }
+          updateStats(ALL_STUDENTS);
+          renderStudents(ALL_STUDENTS); // Re-render with current filter
+          showToast(data.message);
+        } else {
+          renderStudents(ALL_STUDENTS);
+
+          if (field === 'hasSecondSeat' && !value && data.requires_seat_choice) {
+            const student = ALL_STUDENTS.find(s => s.id === userId);
+            if (student) {
+              openSeatChoiceModal({
+                mode: 'disable_second',
+                userId,
+                name: student.name,
+                seats: data.seats || student.seats,
+                title: 'Disable 2nd Ticket',
+                subtitle: `Choose which seat to remove for <strong>${escHtml(student.name)}</strong>.`,
+                confirmLabel: 'Disable & Remove'
+              });
+              return;
+            }
+          }
+          showToast(data.error || 'Error updating student.');
+        }
+      } catch (e) {
+        console.error('Toggle error:', e);
+        renderStudents(ALL_STUDENTS);
+        showToast('Network error while updating.');
+      }
+    }
+
+    // ── Table management ────────────────────────────────────────────────────
+    function recomputeTablesFromStudents() {
+      const countMap = {};
+      TABLE_NUMBERS.forEach(num => countMap[num] = 0);
+      ALL_STUDENTS.forEach(s => {
+        s.seats.forEach(tableNum => {
+          if (countMap.hasOwnProperty(tableNum)) {
+            countMap[tableNum] = (countMap[tableNum] || 0) + 1;
+          }
+        });
+      });
+      ALL_TABLES = TABLE_NUMBERS.map(num => ({
+        number: num,
+        count: countMap[num] || 0
+      }));
+      updateTableGrid(ALL_TABLES);
+    }
+
+    function updateStudentSeats(userId, newSeats) {
+      const student = ALL_STUDENTS.find(s => s.id === userId);
+      if (student) {
+        student.seats = newSeats;
+        recomputeTablesFromStudents();
+        renderStudents(ALL_STUDENTS);
+        if (selectedViewTable) selectTableView(selectedViewTable);
+      }
+    }
+
+    function handleAssignSeat(userId) {
+      const student = ALL_STUDENTS.find(s => s.id === userId);
+      if (!student) return;
+
+      const maxSeats = student.hasSecondSeat ? 2 : 1;
+      if (student.seats.length < maxSeats) {
+        openSeatPicker(student.id, student.name, null);
+        return;
+      }
+
+      if (student.seats.length === 1) {
+        openSeatPicker(student.id, student.name, student.seats[0]);
+        return;
+      }
+
+      openSeatChoiceModal({
+        mode: 'move_at_max',
+        userId: student.id,
+        name: student.name,
+        seats: student.seats,
+        title: 'Move Which Seat?',
+        subtitle: `<strong>${escHtml(student.name)}</strong> already has maximum seats. Choose one seat to move.`,
+        confirmLabel: 'Choose Destination'
+      });
+    }
+
+    function resetSeatChoiceModalState() {
+      seatChoiceMode = null;
+      seatChoiceUserId = null;
+      seatChoiceUserName = '';
+      seatChoiceSelectedTable = null;
+      document.getElementById('seatChoiceList').innerHTML = '';
+      document.getElementById('seatChoiceConfirmBtn').disabled = true;
+    }
+
+    function openSeatChoiceModal({ mode, userId, name, seats, title, subtitle, confirmLabel }) {
+      seatChoiceMode = mode;
+      seatChoiceUserId = userId;
+      seatChoiceUserName = name;
+      seatChoiceSelectedTable = null;
+
+      document.getElementById('seatChoiceTitle').textContent = title;
+      document.getElementById('seatChoiceSub').innerHTML = subtitle;
+      document.getElementById('seatChoiceConfirmBtn').textContent = confirmLabel || 'Continue';
+      document.getElementById('seatChoiceConfirmBtn').disabled = true;
+
+      const list = document.getElementById('seatChoiceList');
+      list.innerHTML = seats.map((tableNum, i) => `
+        <button type="button" class="seat-choice-option" data-table="${tableNum}" data-index="${i}">
+          <span>Seat ${i + 1}</span>
+          <strong>Table ${tableNum}</strong>
+        </button>
+      `).join('');
+
+      list.querySelectorAll('.seat-choice-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          list.querySelectorAll('.seat-choice-option').forEach(x => x.classList.remove('active'));
+          btn.classList.add('active');
+          seatChoiceSelectedTable = parseInt(btn.dataset.table);
+          document.getElementById('seatChoiceConfirmBtn').disabled = false;
+        });
+      });
+
+      openModal('seatChoiceModal');
+    }
+
+    async function confirmSeatChoice() {
+      if (seatChoiceSelectedTable === null || seatChoiceUserId === null) return;
+
+      const mode = seatChoiceMode;
+      const userId = seatChoiceUserId;
+      const userName = seatChoiceUserName;
+      const selectedTable = seatChoiceSelectedTable;
+      closeModal('seatChoiceModal');
+
+      if (mode === 'move_at_max') {
+        openSeatPicker(userId, userName, selectedTable);
+        return;
+      }
+
+      if (mode === 'disable_second') {
+        await toggleField(userId, 'hasSecondSeat', false, selectedTable);
+      }
+    }
+
+    // ── Seat Picker ───────────────────────────────────────────────────────────
+    function openSeatPicker(userId, name, fromTable) {
+      try {
+        pickerUserId    = userId;
+        pickerFromTable = fromTable;
+        pickerToTable   = null;
+        pickerIsAssign  = fromTable === null;
+
+        document.getElementById('pickerTitle').textContent = pickerIsAssign ? 'Assign Seat' : 'Move Seat';
+        document.getElementById('pickerSub').innerHTML = pickerIsAssign
+          ? `Pick a table to assign to <strong>${escHtml(name)}</strong>`
+          : `Moving <strong>${escHtml(name)}</strong> from <strong>Table ${fromTable}</strong> — pick new table`;
+        document.getElementById('pickerConfirmBtn').textContent = pickerIsAssign ? 'Assign Seat' : 'Confirm Move';
+        document.getElementById('pickerConfirmBtn').disabled = true;
+        document.getElementById('pickerSelection').innerHTML = 'No table selected yet';
+
+        buildPickerGrid();
+        openModal('seatPickerModal');
+      } catch (e) {
+        console.error('Error opening seat picker:', e);
+        showToast('Could not open seat picker. Please refresh.');
+      }
+    }
+
+    function buildPickerGrid() {
+      if (!Array.isArray(ALL_TABLES)) {
+        console.error('ALL_TABLES is not an array', ALL_TABLES);
+        showToast('Internal error: table data invalid.');
+        return;
+      }
+
+      const grid = document.getElementById('pickerGrid');
+      grid.innerHTML = ALL_TABLES.map(t => {
+        const isCurrent = t.number === pickerFromTable;
+        const isFull    = t.count >= 10 && !isCurrent;
+        let cls = 'pick-card';
+        if (isCurrent)    cls += ' pick-current';
+        else if (isFull)  cls += ' pick-full';
+        else if (t.count > 0) cls += ' pick-partial';
+        return `<div class="${cls}" data-table="${t.number}" data-current="${isCurrent}" data-full="${isFull}" title="Table ${t.number} — ${t.count}/10">
+          <div class="pick-num">${t.number}</div>
+          <div class="pick-count">${t.count}/10</div>
+        </div>`;
+      }).join('');
+
+      grid.onclick = function(e) {
+        const card = e.target.closest('.pick-card');
+        if (!card) return;
+        if (card.dataset.current === 'true' || card.dataset.full === 'true') return;
+        const num = parseInt(card.dataset.table);
+
+        grid.querySelectorAll('.pick-card').forEach(c => c.classList.remove('pick-chosen'));
+        card.classList.add('pick-chosen');
+        pickerToTable = num;
+
+        const t = ALL_TABLES.find(x => x.number === num);
+        const spots = t ? 10 - t.count : '?';
+        document.getElementById('pickerSelection').innerHTML =
+          `Selected: <strong>Table ${num}</strong> — ${spots} spot${spots === 1 ? '' : 's'} available`;
+        document.getElementById('pickerConfirmBtn').disabled = false;
+      };
+    }
+
+    async function confirmPickerSeat() {
+      if (!pickerToTable) return;
+      closeModal('seatPickerModal');
+
+      try {
+        const url = pickerIsAssign ? '/teacher/seat/assign' : '/teacher/seat/change';
+        const body = pickerIsAssign
+          ? { user_id: pickerUserId, to_table: pickerToTable }
+          : { user_id: pickerUserId, from_table: pickerFromTable, to_table: pickerToTable };
+
+        const res = await fetch(url, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          // Update local student data instead of reloading
+          const student = ALL_STUDENTS.find(s => s.id === pickerUserId);
+          if (student) {
+            if (pickerIsAssign) {
+              // Add new seat
+              student.seats = [...student.seats, pickerToTable].sort((a,b) => a - b);
+            } else {
+              // Replace only one matching seat so duplicate-table seats stay correct.
+              const nextSeats = [...student.seats];
+              const fromIdx = nextSeats.indexOf(pickerFromTable);
+              if (fromIdx >= 0) nextSeats[fromIdx] = pickerToTable;
+              else nextSeats.push(pickerToTable);
+              student.seats = nextSeats.sort((a,b) => a - b);
+            }
+
+            // Update table counts
+            recomputeTablesFromStudents();
+
+            // Re-render everything
+            renderStudents(ALL_STUDENTS);
+            updateStats(ALL_STUDENTS);
+            if (selectedViewTable) selectTableView(selectedViewTable);
+          }
+          showToast(data.message);
+        } else {
+          showToast(data.error || 'Error moving seat.');
+        }
+      } catch (e) {
+        console.error('Confirm picker error:', e);
+        showToast('Network error while saving.');
+      }
+    }
+
+    // ── Remove Seat ───────────────────────────────────────────────────────────
+    function openRemoveSeat(userId, name, tableNum) {
+      pendingRemoveUserId = userId;
+      pendingRemoveTable  = tableNum;
+      document.getElementById('removeStudentName').textContent = name;
+      document.getElementById('removeTableNum').textContent    = tableNum;
+      openModal('removeSeatModal');
+    }
+
+    async function confirmRemoveSeat() {
+      closeModal('removeSeatModal');
+      try {
+        const res = await fetch('/teacher/seat/remove', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: pendingRemoveUserId, table_number: pendingRemoveTable })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          // Update local student data
+          const student = ALL_STUDENTS.find(s => s.id === pendingRemoveUserId);
+          if (student) {
+            student.seats = removeOneSeatByTable(student.seats, pendingRemoveTable);
+
+            // Update table counts
+            recomputeTablesFromStudents();
+
+            // Re-render everything
+            renderStudents(ALL_STUDENTS);
+            updateStats(ALL_STUDENTS);
+            if (selectedViewTable) selectTableView(selectedViewTable);
+          }
+          showToast(data.message);
+        } else {
+          showToast(data.error || 'Error removing seat.');
+        }
+      } catch (e) {
+        console.error('Remove seat error:', e);
+        showToast('Network error while removing.');
+      }
+    }
+
+    // ── Seating plan view ─────────────────────────────────────────────────────
+    function selectTableView(num) {
+      selectedViewTable = num;
+      document.querySelectorAll('#teacherTableGrid .table-card').forEach(c => c.classList.remove('selected-view'));
+      const card = document.querySelector(`#teacherTableGrid .table-card[data-table="${num}"]`);
+      if (card) card.classList.add('selected-view');
+
+      document.getElementById('detailTitle').textContent = `Table ${num}`;
+      document.getElementById('detailEmpty').style.display = 'none';
+      document.getElementById('detailList').style.display  = 'block';
+
+      const seated = ALL_STUDENTS.filter(s => s.seats.includes(num));
+      const tableObj = ALL_TABLES.find(t => t.number === num);
+      const count = tableObj ? tableObj.count : 0;
+
+      if (seated.length === 0) {
+        document.getElementById('detailList').innerHTML =
+          `<div class="detail-empty" style="display:block">No one at Table ${num} yet.<br><small>${count}/10 seats taken</small></div>`;
+        return;
+      }
+
+      const listEl = document.getElementById('detailList');
+      listEl.innerHTML =
+        `<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem">${count}/10 seats taken</div>` +
+        seated.map((s, idx) => {
+          const cnt = s.seats.filter(t => t === num).length;
+          return `
+          <div class="detail-student" data-uid="${s.id}">
+            <div>
+              <div class="detail-student-name">${escHtml(s.name)}</div>
+              <div class="detail-student-sub">${escHtml(s.email)}${cnt === 2 ? ' · ×2 seats' : ''}</div>
+            </div>
+            <div class="detail-actions">
+              <button class="btn btn-sm btn-warning" data-action="move" data-uid="${s.id}" data-table="${num}">Move</button>
+              <button class="btn btn-sm btn-danger"  data-action="remove" data-uid="${s.id}" data-table="${num}">✕</button>
+            </div>
+          </div>`;
+        }).join('');
+
+      listEl.querySelectorAll('button[data-action]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uid = parseInt(btn.dataset.uid);
+          const tbl = parseInt(btn.dataset.table);
+          const fresh = ALL_STUDENTS.find(x => x.id === uid);
+          if (!fresh) return;
+          if (btn.dataset.action === 'move') {
+            openSeatPicker(fresh.id, fresh.name, tbl);
+          } else {
+            openRemoveSeat(fresh.id, fresh.name, tbl);
+          }
+        });
+      });
+    }
+
+    function updateTableGrid(tables) {
+      ALL_TABLES = tables;
+      tables.forEach(t => {
+        const card = document.querySelector(`#teacherTableGrid .table-card[data-table="${t.number}"]`);
+        if (!card) return;
+        card.dataset.count = t.count;
+        card.title = `Table ${t.number} — ${t.count}/10`;
+        card.classList.remove('full', 'partial');
+        if (t.count >= 10) card.classList.add('full');
+        else if (t.count > 0) card.classList.add('partial');
+        const dots = card.querySelectorAll('.seat-dot');
+        dots.forEach((dot, i) => dot.classList.toggle('taken', i < t.count));
+        card.querySelector('.table-count').textContent = `${t.count}/10`;
+      });
+    }
+
+    // ── Modal helpers ─────────────────────────────────────────────────────────
+    function openModal(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('active');
+      void el.offsetWidth;
+      el.classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+      if (id === 'seatChoiceModal') resetSeatChoiceModalState();
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+      o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id));
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    // Initial load
+    syncGlobalSeatPickingUi();
+    loadStudents();
+  </script>
+</body>
+</html>
