@@ -58,11 +58,14 @@ async def startup():
     """)
 
     sample_users = [
-        ("teacher1@dawss.ca", "admin123", "Mr. Smith",   False, True,  True),
-        ("teacher2@dawss.ca", "admin123", "Ms. Johnson", False, True,  True),
-        ("jason@dawss.ca",    "prom2026", "Jason",       False, True,  False),
-        ("sarah@dawss.ca",    "prom2026", "Sarah",       True,  True,  False),
-        ("mike@dawss.ca",     "prom2026", "Mike",        False, False, False),
+        ("teacher1@dawss.ca", "admin123", "Mr. B",   False, True,  True),
+        ("teacher2@dawss.ca", "admin123", "Ms. Q", False, True,  True),
+        ("jason@dawss.ca", "prom2026", "Jason", False, True, False),
+        ("diana@dawss.ca", "prom2026", "Diana", True, True, False),
+        ("mike@dawss.ca", "prom2026", "Mike", False, False, False),
+        ("max@dawss.ca", "prom2026", "Max", False, True, False),
+        ("kirk@dawss.ca", "prom2026", "Kirk", True, True, False),
+        ("riyaj@dawss.ca", "prom2026", "Riyaj", False, False, False),
     ]
 
     cursor.executemany(
