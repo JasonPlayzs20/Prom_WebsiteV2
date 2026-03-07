@@ -148,8 +148,17 @@
     .stat-value.red    { color: var(--danger); }
 
     /* ── Student table ── */
-    .student-table-wrap { background: var(--surface); border: 1px solid var(--border-faint); border-radius: 12px; overflow: hidden; transition: background 0.25s; }
+    .student-table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border-faint);
+      border-radius: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      transition: background 0.25s;
+    }
     table { width: 100%; border-collapse: collapse; }
+    #studentTable { min-width: 960px; }
     thead th { background: var(--surface2); padding: 0.75rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); border-bottom: 1px solid var(--border-faint); white-space: nowrap; }
     tbody tr { border-bottom: 1px solid var(--border-faint); transition: background 0.14s; }
     tbody tr:last-child { border-bottom: none; }
@@ -249,6 +258,7 @@
     .btn-warning   { background: var(--warning); color: #000; border-color: var(--warning); }
     .btn-warning:hover   { background: #ffca2c; }
     .btn:disabled  { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+    .table-actions { display: inline-flex; gap: 0.4rem; flex-wrap: wrap; }
 
     /* ── Seating plan tab ── */
     .seating-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; align-items: start; }
@@ -399,6 +409,21 @@
     .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.7rem 1.3rem; color: var(--text); font-size: 0.88rem; z-index: 300; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); white-space: nowrap; box-shadow: 0 6px 24px #00000033; }
     .toast.show { transform: translateX(-50%) translateY(0); }
     .empty-row td { text-align: center; color: var(--muted); padding: 2rem; font-style: italic; }
+
+    @media (max-width: 900px) {
+      header { padding: 0.75rem 1rem; }
+      .logo { font-size: 1.25rem; }
+      .tabs { padding: 0 0.8rem; overflow-x: auto; }
+      .tab-btn { padding: 0.75rem 0.8rem; white-space: nowrap; }
+      main { padding: 1.2rem 0.8rem 2rem; }
+      .section-header { align-items: flex-start; }
+      .toolbar { width: 100%; }
+      .search-input, .filter-select { width: 100%; max-width: none; }
+      .toolbar .btn { width: 100%; justify-content: center; }
+      .global-picking-control { width: 100%; justify-content: space-between; }
+      .stats-bar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat-card { min-width: 0; }
+    }
   </style>
 </head>
 <body>
@@ -446,6 +471,7 @@
             </label>
             <span class="global-picking-status" id="globalSeatPickingStatus">—</span>
           </div>
+          <button class="btn btn-primary" type="button" onclick="openAddStudentModal()">+ Add Student</button>
         </div>
       </div>
 
@@ -474,6 +500,7 @@
           </tbody>
         </table>
       </div>
+
     </div>
 
     <!-- ══ SEATING TAB ══ -->
@@ -555,6 +582,51 @@
     </div>
   </div>
 
+  <!-- ══ Modal: Remove Student ══ -->
+  <div class="modal-overlay" id="removeStudentModal">
+    <div class="modal modal-sm">
+      <div class="modal-icon">⚠️</div>
+      <div class="modal-body-center">
+        <h2 style="font-family:'Akshar', sans-serif;font-size:1.2rem;color:var(--text);margin-bottom:0.5rem">Remove Student?</h2>
+        <p>Remove <strong id="removeStudentAccountName">—</strong> from the system?<br>All of their seats will be removed.</p>
+      </div>
+      <div class="modal-actions-center">
+        <button class="btn btn-secondary" onclick="closeModal('removeStudentModal')">Cancel</button>
+        <button class="btn btn-danger" onclick="confirmRemoveStudent()">Yes, Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ Modal: Add Student ══ -->
+  <div class="modal-overlay" id="addStudentModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>Add Student</h2>
+        <button class="modal-close" onclick="closeModal('addStudentModal')">✕</button>
+      </div>
+      <div class="modal-sub">Create a new student account.</div>
+      <form id="addStudentForm" onsubmit="submitAddStudent(event)">
+        <div style="display:grid;gap:0.65rem;">
+          <input id="addStudentName" type="text" placeholder="Full name" required style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);border-radius:7px;padding:0.55rem 0.7rem;font-family:'Akshar', sans-serif;">
+          <input id="addStudentEmail" type="email" placeholder="Email" required style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);border-radius:7px;padding:0.55rem 0.7rem;font-family:'Akshar', sans-serif;">
+          <input id="addStudentPassword" type="text" placeholder="Password" required style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--text);border-radius:7px;padding:0.55rem 0.7rem;font-family:'Akshar', sans-serif;">
+          <label style="display:flex;align-items:center;gap:0.5rem;color:var(--muted-light);font-size:0.85rem;">
+            <input id="addStudentEnabled" type="checkbox">
+            Enable account now
+          </label>
+          <label style="display:flex;align-items:center;gap:0.5rem;color:var(--muted-light);font-size:0.85rem;">
+            <input id="addStudentSecondTicket" type="checkbox">
+            Give 2nd ticket
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" type="button" onclick="closeModal('addStudentModal')">Cancel</button>
+          <button class="btn btn-primary" type="submit">Add Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ══ Modal: Choose Seat (for max-seat move / disable 2nd ticket) ══ -->
   <div class="modal-overlay" id="seatChoiceModal">
     <div class="modal modal-sm">
@@ -603,6 +675,7 @@
     // remove state
     let pendingRemoveUserId = null;
     let pendingRemoveTable  = null;
+    let pendingRemoveStudentAccountId = null;
 
     // seat choice modal state
     let seatChoiceMode = null; // "move_at_max" | "disable_second"
@@ -694,7 +767,10 @@
             }
           </td>
           <td>
-            <button class="btn btn-sm btn-secondary" data-uid="${s.id}" data-name="${escHtml(s.name)}" data-assign="1">+ Seat</button>
+            <div class="table-actions">
+              <button class="btn btn-sm btn-secondary" data-uid="${s.id}" data-name="${escHtml(s.name)}" data-assign="1">+ Seat</button>
+              <button class="btn btn-sm btn-danger" data-uid="${s.id}" data-name="${escHtml(s.name)}" data-remove-student="1">Remove</button>
+            </div>
           </td>
         </tr>
       `).join('');
@@ -751,6 +827,14 @@
         btn.addEventListener('click', () => {
           const uid = parseInt(btn.dataset.uid);
           handleAssignSeat(uid);
+        });
+      });
+
+      tbody.querySelectorAll('button[data-remove-student]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const uid = parseInt(btn.dataset.uid);
+          const name = btn.dataset.name || 'this student';
+          openRemoveStudentModal(uid, name);
         });
       });
     }
@@ -1129,6 +1213,92 @@
       }
     }
 
+    // ── Student account add/remove ───────────────────────────────────────────
+    function openAddStudentModal() {
+      const form = document.getElementById('addStudentForm');
+      if (form) form.reset();
+      openModal('addStudentModal');
+    }
+
+    async function submitAddStudent(event) {
+      event.preventDefault();
+      const name = document.getElementById('addStudentName').value.trim();
+      const email = document.getElementById('addStudentEmail').value.trim();
+      const password = document.getElementById('addStudentPassword').value;
+      const enabled = !!document.getElementById('addStudentEnabled').checked;
+      const hasSecondSeat = !!document.getElementById('addStudentSecondTicket').checked;
+
+      if (!name || !email || !password) {
+        showToast('Name, email, and password are required.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/teacher/student/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password, enabled, hasSecondSeat })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.error || 'Could not add student.');
+          return;
+        }
+
+        if (data.student) {
+          ALL_STUDENTS.push(data.student);
+          ALL_STUDENTS.sort((a, b) => a.name.localeCompare(b.name));
+          renderStudents(ALL_STUDENTS);
+          updateStats(ALL_STUDENTS);
+        } else {
+          await loadStudents();
+        }
+
+        closeModal('addStudentModal');
+        showToast(data.message || 'Student added.');
+      } catch (e) {
+        console.error('Add student error:', e);
+        showToast('Network error while adding student.');
+      }
+    }
+
+    function openRemoveStudentModal(userId, name) {
+      pendingRemoveStudentAccountId = userId;
+      document.getElementById('removeStudentAccountName').textContent = name;
+      openModal('removeStudentModal');
+    }
+
+    async function confirmRemoveStudent() {
+      const userId = pendingRemoveStudentAccountId;
+      closeModal('removeStudentModal');
+      if (!userId) return;
+
+      try {
+        const res = await fetch('/teacher/student/remove', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userId })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          showToast(data.error || 'Could not remove student.');
+          return;
+        }
+
+        ALL_STUDENTS = ALL_STUDENTS.filter(s => s.id !== userId);
+        recomputeTablesFromStudents();
+        renderStudents(ALL_STUDENTS);
+        updateStats(ALL_STUDENTS);
+        if (selectedViewTable) selectTableView(selectedViewTable);
+        showToast(data.message || 'Student removed.');
+      } catch (e) {
+        console.error('Remove student error:', e);
+        showToast('Network error while removing student.');
+      } finally {
+        pendingRemoveStudentAccountId = null;
+      }
+    }
+
     // ── Seating plan view ─────────────────────────────────────────────────────
     function selectTableView(num) {
       selectedViewTable = num;
@@ -1210,6 +1380,7 @@
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
       if (id === 'seatChoiceModal') resetSeatChoiceModalState();
+      if (id === 'removeStudentModal') pendingRemoveStudentAccountId = null;
     }
 
     document.querySelectorAll('.modal-overlay').forEach(o => {

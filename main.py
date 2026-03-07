@@ -429,6 +429,88 @@ async def teacher_get_students(request: Request):
     return JSONResponse({"students": students})
 
 
+class TeacherAddStudentBody(BaseModel):
+    name: str
+    email: str
+    password: str
+    enabled: bool = False
+    hasSecondSeat: bool = False
+
+
+class TeacherRemoveStudentBody(BaseModel):
+    user_id: int
+
+
+@app.post("/teacher/student/add", include_in_schema=False)
+async def teacher_add_student(request: Request, body: TeacherAddStudentBody):
+    """Teacher creates a new student account."""
+    if not require_teacher(request):
+        return JSONResponse({"error": "Unauthorized"}, status_code=403)
+
+    name = body.name.strip()
+    email = body.email.strip().lower()
+    password = body.password.strip()
+
+    if not name or not email or not password:
+        return JSONResponse({"success": False, "error": "Name, email, and password are required."})
+
+    conn = get_db()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+            """
+            INSERT INTO users (email, password, name, hasSecondSeat, enabled, isTeacher)
+            VALUES (?, ?, ?, ?, ?, 0)
+            """,
+            (email, password, name, 1 if body.hasSecondSeat else 0, 1 if body.enabled else 0),
+        )
+        student_id = cursor.lastrowid
+        conn.commit()
+    except sqlite3.IntegrityError:
+        conn.close()
+        return JSONResponse({"success": False, "error": "A user with that email already exists."})
+
+    conn.close()
+    return JSONResponse({
+        "success": True,
+        "message": f"Added student {name}.",
+        "student": {
+            "id": student_id,
+            "name": name,
+            "email": email,
+            "enabled": bool(body.enabled),
+            "hasSecondSeat": bool(body.hasSecondSeat),
+            "seats": [],
+        },
+    })
+
+
+@app.post("/teacher/student/remove", include_in_schema=False)
+async def teacher_remove_student(request: Request, body: TeacherRemoveStudentBody):
+    """Teacher removes a student account and all assigned seats."""
+    if not require_teacher(request):
+        return JSONResponse({"error": "Unauthorized"}, status_code=403)
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT name FROM users WHERE id = ? AND isTeacher = 0", (body.user_id,))
+    student = cursor.fetchone()
+    if not student:
+        conn.close()
+        return JSONResponse({"success": False, "error": "Student not found."})
+
+    cursor.execute("DELETE FROM seats WHERE user_id = ?", (body.user_id,))
+    cursor.execute("DELETE FROM users WHERE id = ? AND isTeacher = 0", (body.user_id,))
+    conn.commit()
+    conn.close()
+
+    return JSONResponse({
+        "success": True,
+        "message": f"Removed student {student['name']}.",
+    })
+
+
 class SeatPickingToggleBody(BaseModel):
     enabled: bool
 
